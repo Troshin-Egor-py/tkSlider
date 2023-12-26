@@ -88,12 +88,24 @@ class tkSlider(tkinter.Widget):
             width = self.height_scale,
             fill = fill
         )
+        print(start_Y)
+        print(start_X - self.height_scale / 2,
+            start_Y - self.height_scale,
+            start_X + self.height_scale / 2,
+            start_Y,)
+        self.C.create_oval(
+            start_X - self.height_scale / 2,
+            start_Y - self.height_scale,
+            start_X + self.height_scale / 2,
+            start_Y,
+            fill = self.color_scale
+        )
 
 
 
 if __name__ == '__main__':
     window = tkinter.Tk()
-    window.geometry('200x200+1000+750')
+    window.geometry('1000x1000+1000+750')
 
     tkS = tkSlider(
         master = window,
@@ -102,7 +114,7 @@ if __name__ == '__main__':
         width_scale = 1000,
         bar_in_start = 5,
         bar_radius = 10,
-        height_scale = 2
+        height_scale = 10,
     )
 
     window.mainloop()
