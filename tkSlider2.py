@@ -1,5 +1,8 @@
 import tkinter
 import colorama
+import math
+
+
 colorama.init(autoreset = True)
 
 
@@ -9,7 +12,7 @@ class tkSlider(tkinter.Widget):
             
             # Required arguments
             master:        object,
-            past:          int|float,
+            from_:          int|float,
             to:            int|float,
             width_scale:   int,
             bar_in_start:  int|float,
@@ -40,7 +43,7 @@ class tkSlider(tkinter.Widget):
         self.master = master
 
         # Value
-        self.past = past
+        self.from_ = from_
         self.to = to
 
         # Scale
@@ -59,10 +62,11 @@ class tkSlider(tkinter.Widget):
         self.bar_in_start =     bar_in_start 
 
         self.C = tkinter.Canvas(
-            height = bar_radius,
-            width = width_scale
+            height = bar_radius + bar_border_width * 2,
+            width = width_scale,
+            bg = 'red'
         )
-        self.C.pack()
+        self.C.place(x = 0, y = 25)
 
         self.draw_scale(
             start_X = self.bar_radius,
@@ -71,7 +75,8 @@ class tkSlider(tkinter.Widget):
             end_Y = self.bar_radius - self.height_scale / 2,
             fill = self.color_scale
         )
-        
+
+        self.draw_bar(self.bar_in_start)
     def draw_scale(
             self,
             start_X,
@@ -88,33 +93,46 @@ class tkSlider(tkinter.Widget):
             width = self.height_scale,
             fill = fill
         )
-        print(start_Y)
-        print(start_X - self.height_scale / 2,
-            start_Y - self.height_scale,
-            start_X + self.height_scale / 2,
-            start_Y,)
-        self.C.create_oval(
-            start_X - self.height_scale / 2,
-            start_Y - self.height_scale,
-            start_X + self.height_scale / 2,
-            start_Y,
-            fill = self.color_scale
+    def draw_bar(
+            self,
+            x
+    ) -> None:
+        pos = (x - self.from_) * (self.width_scale / (self.to - self.from_))
+
+        print(
+            pos - self.bar_radius / 2 - self.bar_border_width / 2,
+            self.bar_border_width,
+            pos + self.bar_radius / 2 + self.bar_border_width / 2,
+            self.bar_radius + self.bar_border_width * 2,
         )
 
+        self.C.create_rectangle(
+            math.ceil(pos - self.bar_radius / 2 - self.bar_border_width / 2),
+            self.bar_border_width,
+            # 0,
+            math.ceil(pos + self.bar_radius / 2 + self.bar_border_width / 2),
+            self.bar_radius + self.bar_border_width * 2,
+            # 10,
+
+            fill = self.color_bar,
+            outline = self.color_bar_border,
+            width = self.bar_border_width
+        )
 
 
 if __name__ == '__main__':
     window = tkinter.Tk()
-    window.geometry('1000x1000+1000+750')
+    window.geometry('1000x100+1000+750')
 
     tkS = tkSlider(
         master = window,
-        past = 0,
+        from_ = 0,
         to = 10,
         width_scale = 1000,
         bar_in_start = 5,
-        bar_radius = 10,
-        height_scale = 10,
+        bar_radius = 7,
+        height_scale = 5,
+        bar_border_width = 0
     )
 
     window.mainloop()
